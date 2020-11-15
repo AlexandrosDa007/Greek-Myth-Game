@@ -5,10 +5,9 @@ using UnityEngine.Events;
 
 public class Dice : MonoBehaviour
 {
-    public Player[] players;
-    public Player player;
     public GameObject definedButton;
     public UnityEvent OnClick = new UnityEvent();
+    public GameObject realDice;
 
     public static int diceResult;
     public static bool isRolling = false;
@@ -36,12 +35,11 @@ public class Dice : MonoBehaviour
     public void RollDice()
     {
         Board.SetUpBoard();
-        diceResult = Mathf.FloorToInt(Random.Range(1,7));
-        // Disallow player to roll dice
         isRolling = true;
-        // Find which player should move this is SERVER SIDE 
 
-        player.MovePlayer(0);
+        realDice.SetActive(true);
+        RealDice rd = realDice.GetComponent<RealDice>();
+        rd.roll = true;
         
     }
 }

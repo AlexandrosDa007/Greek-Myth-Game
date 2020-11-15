@@ -15,6 +15,9 @@ public class RealDice : MonoBehaviour
 
     public DiceSide[] diceSides;
 
+    public bool roll;
+    public Player player;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,8 +29,9 @@ public class RealDice : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (roll)
         {
+            roll = false;
             RollDice();
         }
 
@@ -72,7 +76,7 @@ public class RealDice : MonoBehaviour
         Reset();
         thrown = true;
         rb.useGravity = true;
-        rb.AddTorque(Random.Range(0, 500), Random.Range(0, 500), Random.Range(0, 500));
+        rb.AddTorque(Random.Range(0, 1000), Random.Range(0, 1000), Random.Range(0, 1000));
 
     }
 
@@ -85,8 +89,13 @@ public class RealDice : MonoBehaviour
             
             if (side.OnGround)
             {
+                
                 diceValue = side.sideValue;
-                Debug.Log("You got: diceValue");
+                Debug.Log("You got: "+diceValue);
+                gameObject.SetActive(false);
+                Reset();
+                player.MovePlayer(diceValue);
+                // TODO: show window with dice Value
             }
         }
 
