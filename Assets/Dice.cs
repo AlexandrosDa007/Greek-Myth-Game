@@ -5,15 +5,22 @@ using UnityEngine.Events;
 
 public class Dice : MonoBehaviour
 {
-    public GameObject definedButton;
-    public UnityEvent OnClick = new UnityEvent();
-    public GameObject realDice;
-
     public static int diceResult;
     public static bool isRolling = false;
+    public static string turn;
+
+    public GameObject definedButton;
+    public UnityEvent OnClick = new UnityEvent();
+    public GameObject diceSpawner;
+
+    
+
+
     void Start()
     {
         definedButton = this.gameObject;
+        turn = "player";
+
     }
 
     // Update is called once per frame
@@ -34,12 +41,11 @@ public class Dice : MonoBehaviour
 
     public void RollDice()
     {
+        Debug.Log("Ri3e zaria");
+
         Board.SetUpBoard();
         isRolling = true;
 
-        realDice.SetActive(true);
-        RealDice rd = realDice.GetComponent<RealDice>();
-        rd.roll = true;
-        
+        diceSpawner.GetComponent<DiceSpawner>().SpawnDice();
     }
 }

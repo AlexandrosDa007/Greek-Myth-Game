@@ -5,97 +5,57 @@ using UnityEngine;
 public class RealDice : MonoBehaviour
 {
 
-    Rigidbody rb;
-    public bool hasLanded;
-    public bool thrown;
-
-    private Vector3 initialPosition;
-
-    public int diceValue;
-
-    public DiceSide[] diceSides;
-
-    public bool roll;
+    public Rigidbody rb;
     public Player player;
+    public Enemy enemy;
+    public DiceSide[] diceSides;
+    public bool thrown;
+    public int diceValue;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        initialPosition = transform.position;
-        rb.useGravity = false;
+        thrown = false;
+        //transform.rotation = new Quaternion(Random.Range(0, 1500), Random.Range(0, 1500), Random.Range(0, 1500), 0);
+        rb.AddTorque(Random.Range(0,10000), Random.Range(0,10000), Random.Range(0,10000));
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (roll)
+        if (rb.IsSleeping())
         {
-            roll = false;
-            RollDice();
-        }
-
-        if (rb.IsSleeping() && !hasLanded && thrown)
-        {
-            hasLanded = true;
-            rb.useGravity = false;
             SideValueCheck();
-
-        }
-        else if (rb.IsSleeping() && hasLanded && diceValue == 0)
-        {
-            RollAgain();
         }
     }
 
-    void RollDice()
+    public void Reset()
     {
-        if (!thrown && !hasLanded)
-        {
-            thrown = true;
-            rb.useGravity = true;
-            rb.AddTorque(Random.Range(0, 500), Random.Range(0, 500), Random.Range(0, 500));
-        }
-        else if (thrown && hasLanded)
-        {
-            Reset();
-        }
-    }
-
-    void Reset()
-    {
-        transform.position = initialPosition;
         thrown = false;
-        hasLanded = false;
         rb.useGravity = false;
 
     }
 
-    void RollAgain()
-    {
-        Reset();
-        thrown = true;
-        rb.useGravity = true;
-        rb.AddTorque(Random.Range(0, 1000), Random.Range(0, 1000), Random.Range(0, 1000));
-
-    }
 
     void SideValueCheck()
     {
         diceValue = 0;
-        
+
         foreach (DiceSide side in diceSides)
         {
-            
             if (side.OnGround)
             {
-                
                 diceValue = side.sideValue;
-                Debug.Log("You got: "+diceValue);
-                gameObject.SetActive(false);
-                Reset();
-                player.MovePlayer(diceValue);
-                // TODO: show window with dice Value
+                thrown = true;
+
+                if (Dice.turn == "player"){
+                    player.MovePlayer(diceValue);
+                    Dice.turn = "enemy";
+                }
+                else{
+                    enemy.MoveEnemy(diceValue);
+                    Dice.turn = "player";
+                }
             }
         }
 

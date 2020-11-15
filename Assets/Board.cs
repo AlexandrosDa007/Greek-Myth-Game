@@ -101,10 +101,6 @@ public class Board : MonoBehaviour
         IGameEvents qs = JsonUtility.FromJson<IGameEvents>(json);
         // qs.questions this contains all the questions 
         GAME_EVENTS_LIST = qs.gameevents;
-        foreach (GameEvent e in GAME_EVENTS_LIST)
-        {
-            Debug.Log(e.title);
-        }
     }
 }
 

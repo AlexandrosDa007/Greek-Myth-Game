@@ -9,14 +9,13 @@ public class Player : MonoBehaviour
 
     public GameObject questionWindow;
     public GameObject eventWindow;
-    // Start is called before the first frame update
+    public Enemy enemy;
     private int Startingstep;
     private string playerPosition;
+    
+    // Start is called before the first frame update
     void Start()
     {
-
-
-
 
 
         Startingstep = 1;
@@ -91,7 +90,6 @@ public class Player : MonoBehaviour
         {
             for (int i = step; i > newStep-1; i--)
             {
-                Debug.Log(i);
                 MyStep st = Board.GetStepFromIndex(i);
                 newPosition = st.Position;
                 switch (playerPosition)
@@ -152,27 +150,32 @@ public class Player : MonoBehaviour
             }
         }
         // Let player roll a dice again
-        Dice.isRolling = false;
         Startingstep = newStep;
         checkIfQuestion();
         checkIfEvent();
-
+        if (!checkIfQuestion() && !checkIfEvent())
+        {
+            enemy.RollDiceForEnemy();
+        }
     }
 
 
-    public void checkIfEvent()
+    public bool checkIfEvent()
     {
         GameEvent e = Board.GetStepFromIndex(Startingstep).GameEvent;
         if (e != null)
         {
             EventManger em = eventWindow.GetComponent<EventManger>();
-            em.SetGameEvent(e);
             eventWindow.SetActive(true);
+            em.SetGameEvent(e);
             Dice.isRolling = true;
+            return true;
         }
+        return false;
+
     }
 
-    public void checkIfQuestion()
+    public bool checkIfQuestion()
     {
         Question q = Board.GetStepFromIndex(Startingstep).Question;
         if (q != null)
@@ -183,8 +186,10 @@ public class Player : MonoBehaviour
             qm.questionText.GetComponent<TextMeshProUGUI>().text = qm.Question.question;
             questionWindow.SetActive(true);
             Dice.isRolling = true;
-
+            return true;
         }
+
+        return false;
     }
 
 }

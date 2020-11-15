@@ -9,6 +9,7 @@ public class QuestionManager : MonoBehaviour
     private Question question;
 
     public Player player;
+    public Enemy enemy;
     public GameObject questionText;
 
     public GameObject[] answerButtons;
