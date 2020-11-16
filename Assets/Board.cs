@@ -20,6 +20,7 @@ public class IGameEvents
 
 public class Board : MonoBehaviour
 {
+    public static bool isMultiplayer = false;
     public static List<MyStep> stepList = new List<MyStep>(49);
 
     public static Question[] QUESTION_LIST;
@@ -35,7 +36,9 @@ public class Board : MonoBehaviour
 
     public static void SetUpBoard()
     {
-        InitializeQuestions();
+        if (isMultiplayer)
+            InitializeQuestions();
+
         InitializeGameEvents();
         GameObject[] steps = GameObject.FindGameObjectsWithTag("platform");
         foreach (GameObject st in steps)
@@ -45,10 +48,14 @@ public class Board : MonoBehaviour
 
 
             // TODO: Find a better way to implement questions
-            if (i == 3 || i == 5 || i == 25 || i == 27 || i == 29 || i == 23 || i == 42 || i == 39 || i == 10 || i == 21 || i == 46 || i == 11 || i == 37 || i == 33 || i == 17 || i == 15)
+            if (isMultiplayer)
             {
-                int rnumber = Mathf.FloorToInt(UnityEngine.Random.Range(0, 2));
-                newStep.Question = QUESTION_LIST[rnumber];
+                if (i == 3 || i == 5 || i == 25 || i == 27 || i == 29 || i == 23 || i == 42 || i == 39 || i == 10 || i == 21 || i == 46 || i == 11 || i == 37 || i == 33 || i == 17 || i == 15)
+                {
+                    int rnumber = Mathf.FloorToInt(UnityEngine.Random.Range(0, 2));
+                    newStep.Question = QUESTION_LIST[rnumber];
+                }
+
             }
             if (i == 4 || i == 8 || i == 40 || i == 41 || i == 31 || i == 9 || i == 47 || i == 34 || i == 13 || i == 19 || i == 16)
             {
@@ -89,7 +96,7 @@ public class Board : MonoBehaviour
         IQuestions qs = JsonUtility.FromJson<IQuestions>(json);
         // qs.questions this contains all the questions 
         QUESTION_LIST = qs.questions;
-        
+
 
     }
 

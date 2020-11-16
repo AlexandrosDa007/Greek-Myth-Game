@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
+    public GameObject gameOverWindow;
     public GameObject eventWindow;
     public GameObject diceSpawner;
 
@@ -70,7 +72,7 @@ public class Enemy : MonoBehaviour
                 newPosition = st.Position;
                 newPosition.x += 6f;
                 transform.position = newPosition;
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
         else
@@ -78,13 +80,21 @@ public class Enemy : MonoBehaviour
 
             for (int i = step; i < newStep + 1; i++)
             {
+                if (i == 49)
+                {
+                    Debug.Log("telos");
+                    // Finished game Enemy is the winner
+                    // Show something
+                    EndGame();
+                    yield break;
+                }
 
                 MyStep st = Board.GetStepFromIndex(i);
                 newPosition = st.Position;
                 newPosition.x += 6f;
                 transform.position = newPosition;
 
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
         startingStep = newStep;
@@ -105,4 +115,23 @@ public class Enemy : MonoBehaviour
         return false;
 
     }
+
+    public void EndGame()
+    {
+        StartCoroutine(Timer());
+        
+    }
+
+    private IEnumerator Timer()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            gameOverWindow.SetActive(true);
+            gameOverWindow.GetComponentInChildren<TextMeshProUGUI>().text = "Enemy wins!\nQuiting in "+(5-i)+" sec...";
+            yield return new WaitForSeconds(1f);
+
+        }
+        UnityEditor.EditorApplication.isPlaying = false;
+    }
+
 }

@@ -7,12 +7,13 @@ using TMPro;
 public class Player : MonoBehaviour
 {
 
+    public GameObject gameOverWindow;
     public GameObject questionWindow;
     public GameObject eventWindow;
     public Enemy enemy;
     private int Startingstep;
     private string playerPosition;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -88,7 +89,7 @@ public class Player : MonoBehaviour
         // When the player goes back
         if (step > newStep)
         {
-            for (int i = step; i > newStep-1; i--)
+            for (int i = step; i > newStep - 1; i--)
             {
                 MyStep st = Board.GetStepFromIndex(i);
                 newPosition = st.Position;
@@ -113,7 +114,7 @@ public class Player : MonoBehaviour
 
                 }
                 transform.position = newPosition;
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.2f);
             }
         }
         else
@@ -123,6 +124,7 @@ public class Player : MonoBehaviour
             {
 
                 MyStep st = Board.GetStepFromIndex(i);
+
                 newPosition = st.Position;
                 switch (playerPosition)
                 {
@@ -146,7 +148,15 @@ public class Player : MonoBehaviour
                 }
                 transform.position = newPosition;
 
-                yield return new WaitForSeconds(1f);
+                if (i == 49)
+                {
+                    Debug.Log("telos");
+                    // Finished game Player is the winner
+                    // Show something
+                    EndGame();
+                    yield break;
+                }
+                yield return new WaitForSeconds(0.2f);
             }
         }
         // Let player roll a dice again
@@ -190,6 +200,24 @@ public class Player : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void EndGame()
+    {
+        StartCoroutine(Timer());
+        
+    }
+
+    private IEnumerator Timer()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            gameOverWindow.SetActive(true);
+            gameOverWindow.GetComponentInChildren<TextMeshProUGUI>().text = "Player wins!\nQuiting in "+(5-i)+" sec...";
+            yield return new WaitForSeconds(1f);
+
+        }
+        UnityEditor.EditorApplication.isPlaying = false;
     }
 
 }

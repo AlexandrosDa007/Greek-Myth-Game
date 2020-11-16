@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class Dice : MonoBehaviour
 {
@@ -12,7 +13,8 @@ public class Dice : MonoBehaviour
     public GameObject definedButton;
     public UnityEvent OnClick = new UnityEvent();
     public GameObject diceSpawner;
-
+    public Sprite enabledSprite;
+    public Sprite disabledSprite;
     
 
 
@@ -20,7 +22,6 @@ public class Dice : MonoBehaviour
     {
         definedButton = this.gameObject;
         turn = "player";
-
     }
 
     // Update is called once per frame
@@ -37,6 +38,13 @@ public class Dice : MonoBehaviour
                 OnClick.Invoke();
             }
         }
+
+        if(!isRolling && gameObject.GetComponent<SpriteRenderer>().sprite == disabledSprite)
+        {
+            gameObject.GetComponent<SpriteRenderer>().sprite = enabledSprite;
+        }
+        
+        
     }
 
     public void RollDice()
@@ -45,7 +53,9 @@ public class Dice : MonoBehaviour
 
         Board.SetUpBoard();
         isRolling = true;
+        gameObject.GetComponent<SpriteRenderer>().sprite = disabledSprite;
 
         diceSpawner.GetComponent<DiceSpawner>().SpawnDice();
     }
+
 }

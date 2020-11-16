@@ -41,7 +41,7 @@ public class EventManger : MonoBehaviour
 
         if (Dice.turn == "player")
         {
-            okButton.SetActive(false);
+            okButton.GetComponent<Button>().enabled = false;
             StartCoroutine(CloseWindow());
         }
         
@@ -55,10 +55,14 @@ public class EventManger : MonoBehaviour
 
     private IEnumerator CloseWindow()
     {
-        Debug.Log("waiting for 5 seconds then closing window and moving enemy!");
-        yield return new WaitForSeconds(5f);
-        gameObject.SetActive(false);
+        for(int i =0;i<5;i++)
+        {
 
+            okButton.GetComponentInChildren<TextMeshProUGUI>().text = "ok ("+(5-i)+")";
+            yield return new WaitForSeconds(1f);
+        }
+
+        gameObject.SetActive(false);
         enemy.MoveEnemy(gameEvent.steps);
     }
 }
