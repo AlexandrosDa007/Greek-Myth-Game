@@ -7,6 +7,8 @@ TagManager:
   - platform
   - ground
   - gameover
+  - musicSource
+  - soundEffects
   layers:
   - Default
   - TransparentFX

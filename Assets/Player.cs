@@ -7,6 +7,7 @@ using TMPro;
 public class Player : MonoBehaviour
 {
 
+    public AudioClip moveSound;
     public GameObject gameOverWindow;
     public GameObject questionWindow;
     public GameObject eventWindow;
@@ -114,6 +115,8 @@ public class Player : MonoBehaviour
 
                 }
                 transform.position = newPosition;
+                // Play sound
+                GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
                 yield return new WaitForSeconds(0.2f);
             }
         }
@@ -147,7 +150,8 @@ public class Player : MonoBehaviour
 
                 }
                 transform.position = newPosition;
-
+                // Play sound
+                GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
                 if (i == 49)
                 {
                     Debug.Log("telos");
