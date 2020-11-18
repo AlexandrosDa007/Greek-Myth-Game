@@ -100,6 +100,10 @@ public class Enemy : MonoBehaviour
         }
         startingStep = newStep;
         Dice.isRolling = CheckIfEvent();
+        if (!Dice.isRolling) {
+            // Enemy finished moving
+            Dice.turn = "player";
+        }
 
     }
 

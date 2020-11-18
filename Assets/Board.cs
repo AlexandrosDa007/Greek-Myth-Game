@@ -90,9 +90,9 @@ public class Board : MonoBehaviour
 
     public static void InitializeQuestions()
     {
-        StreamReader reader = new StreamReader("Assets/questions.json");
-        string json = reader.ReadToEnd();
-        reader.Close();
+        TextAsset kati = Resources.Load<TextAsset>("questions");
+        string json = kati.text;
+        //reader.Close();
         IQuestions qs = JsonUtility.FromJson<IQuestions>(json);
         // qs.questions this contains all the questions 
         QUESTION_LIST = qs.questions;
@@ -102,9 +102,11 @@ public class Board : MonoBehaviour
 
     public static void InitializeGameEvents()
     {
-        StreamReader reader = new StreamReader("Assets/gameevents.json");
-        string json = reader.ReadToEnd();
-        reader.Close();
+        //StreamReader reader = new StreamReader("Assets/gameevents.json");
+        TextAsset kati = Resources.Load<TextAsset>("gameevents");
+        string json = kati.text;
+        Debug.Log(json);
+        //reader.Close();
         IGameEvents qs = JsonUtility.FromJson<IGameEvents>(json);
         // qs.questions this contains all the questions 
         GAME_EVENTS_LIST = qs.gameevents;
