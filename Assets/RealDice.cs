@@ -49,12 +49,10 @@ public class RealDice : MonoBehaviour
                 thrown = true;
 
                 if (Dice.turn == "player"){
-                    player.MovePlayer(diceValue);
-                    Dice.turn = "enemy";
+                    player.MovePlayer(100);
                 }
                 else{
                     enemy.MoveEnemy(diceValue);
-                    Dice.turn = "player";
                 }
             }
         }

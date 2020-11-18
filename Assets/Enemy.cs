@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Enemy : MonoBehaviour
 {
@@ -118,11 +119,11 @@ public class Enemy : MonoBehaviour
 
     public void EndGame()
     {
-        StartCoroutine(Timer());
+        StartCoroutine(EndGameTimer());
         
     }
 
-    private IEnumerator Timer()
+    private IEnumerator EndGameTimer()
     {
         for (int i = 0; i < 5; i++)
         {
@@ -131,7 +132,9 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
         }
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
+        // Go to menu
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
 }

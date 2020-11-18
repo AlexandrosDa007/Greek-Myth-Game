@@ -49,7 +49,9 @@ public class Dice : MonoBehaviour
 
     public void RollDice()
     {
-        Debug.Log("Ri3e zaria");
+        // This is called only when player rolls dice
+
+        Dice.turn = "player";
 
         Board.SetUpBoard();
         isRolling = true;

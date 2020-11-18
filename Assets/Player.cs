@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -169,6 +169,7 @@ public class Player : MonoBehaviour
         checkIfEvent();
         if (!checkIfQuestion() && !checkIfEvent())
         {
+            Dice.turn = "enemy";
             enemy.RollDiceForEnemy();
         }
     }
@@ -208,11 +209,11 @@ public class Player : MonoBehaviour
 
     public void EndGame()
     {
-        StartCoroutine(Timer());
+        StartCoroutine(EndGameTimer());
         
     }
 
-    private IEnumerator Timer()
+    private IEnumerator EndGameTimer()
     {
         for (int i = 0; i < 5; i++)
         {
@@ -221,7 +222,9 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(1f);
 
         }
-        UnityEditor.EditorApplication.isPlaying = false;
+        //UnityEditor.EditorApplication.isPlaying = false;
+        // Go to menu
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SettingsWindow : MonoBehaviour
 {
@@ -24,5 +25,10 @@ public class SettingsWindow : MonoBehaviour
 
         soundEffects.ChangeSoundEffectVolume(soundEffectsSlider.GetComponent<UnityEngine.UI.Slider>().value);
         soundEffects.PlaySoundEffect(soundEffect);
+    }
+
+    public void QuitToMenu()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
     }
 }

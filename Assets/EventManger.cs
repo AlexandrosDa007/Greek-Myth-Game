@@ -30,16 +30,17 @@ public class EventManger : MonoBehaviour
     public void SetGameEvent(GameEvent e)
     {
         okButton.SetActive(true);
-        this.gameEvent = e;
-        this.eventTitle.GetComponent<TextMeshProUGUI>().text = this.gameEvent.title;
-        this.eventDescription.GetComponent<TextMeshProUGUI>().text = this.gameEvent.description;
-
+        okButton.GetComponent<Button>().enabled = true;
+        gameEvent = e;
+        eventTitle.GetComponent<TextMeshProUGUI>().text = this.gameEvent.title;
+        eventDescription.GetComponent<TextMeshProUGUI>().text = this.gameEvent.description;
+        okButton.GetComponentInChildren<TextMeshProUGUI>().text = "ok";
 
         gameObject.GetComponent<Image>().sprite = this.gameEvent.isGood ? goodSprite : badSprite;
         
         // TODO: Also play sound effects accordingly
 
-        if (Dice.turn == "player")
+        if (Dice.turn == "enemy")
         {
             okButton.GetComponent<Button>().enabled = false;
             StartCoroutine(CloseWindow());
