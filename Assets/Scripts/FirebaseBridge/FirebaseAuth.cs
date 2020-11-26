@@ -56,4 +56,14 @@ public static class FirebaseAuth
     [DllImport("__Internal")]
     public static extern void OnAuthStateChanged(string objectName, string onUserSignedIn,
         string onUserSignedOut);
+
+    /// <summary>
+    /// Signs out the current User
+    /// </summary>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the user signs put successfully. Method must have signature: void Method(string output)</param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output) </param>
+    [DllImport("__Internal")]
+    public static extern void SignOut(string objectName, string callback,
+        string fallback);
 }

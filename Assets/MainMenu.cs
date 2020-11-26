@@ -10,11 +10,13 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
-    public void QuitGame()
+    public void Logout()
     {
-        // if (UnityEditor.EditorApplication.isPlaying)
-        //     UnityEditor.EditorApplication.isPlaying = false;
-        // else
-            Application.Quit();
+        if (GameObject.Find("FirebaseManager"))
+        {
+            GameObject.Find("FirebaseManager").GetComponent<FirebaseManager>().Logout();
+        }else {
+            Debug.LogError("Couldn't load firebase manager");
+        }
     }
 }
