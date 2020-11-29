@@ -40,6 +40,25 @@ mergeInto(LibraryManager.library, {
         }
     },
 
+    CurrentUser: function (objectName, callback, fallback) {
+        var parsedObjectName = Pointer_stringify(objectName);
+        var parsedCallback = Pointer_stringify(callback);
+        var parsedFallback = Pointer_stringify(fallback);
+
+        try {
+            
+            var cUser = firebase.auth().currentUser;
+            if (cUser) {
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(cUser));
+            } else {
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "");
+            }
+
+        } catch (error) {
+            window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        }
+    },
+
     SignInWithGoogle: function (objectName, callback, fallback) {
         var parsedObjectName = Pointer_stringify(objectName);
         var parsedCallback = Pointer_stringify(callback);

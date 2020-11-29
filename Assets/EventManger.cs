@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-
+using Scripts.GameModels;
 
 public class EventManger : MonoBehaviour
 {
@@ -17,6 +17,10 @@ public class EventManger : MonoBehaviour
 
 
     public Player player;
+
+    //Online specific
+    public PlayerOnline playerOnline;
+
     public Enemy enemy;
 
     // Start is called before the first frame update
@@ -39,8 +43,8 @@ public class EventManger : MonoBehaviour
         gameObject.GetComponent<Image>().sprite = this.gameEvent.isGood ? goodSprite : badSprite;
         
         // TODO: Also play sound effects accordingly
-
-        if (Dice.turn == "enemy")
+     
+        if (!Board.isMultiplayer && Dice.turn == "enemy")
         {
             okButton.GetComponent<Button>().enabled = false;
             StartCoroutine(CloseWindow());
@@ -51,6 +55,12 @@ public class EventManger : MonoBehaviour
     public void OnOkClick()
     {
         gameObject.SetActive(false);
+
+        if (Board.isMultiplayer)
+        {
+            playerOnline.Move(gameEvent.steps);
+            return;
+        }
         player.MovePlayer(gameEvent.steps);
     }
 

@@ -27,7 +27,7 @@ mergeInto(LibraryManager.library, {
         try {
 
             firebase.database().ref(parsedPath).set(parsedValue).then(function(unused) {
-                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Success: " + parsedValue + " was posted to " + parsedPath);
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
             });
 
         } catch (error) {

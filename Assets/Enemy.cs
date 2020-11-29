@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-
+using Scripts.GameModels;
 public class Enemy : MonoBehaviour
 {
     public GameObject gameOverWindow;

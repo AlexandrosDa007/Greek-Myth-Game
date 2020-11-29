@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using System.IO;
+using Scripts.GameModels;
 
 [Serializable]
 public class IQuestions
@@ -29,9 +30,7 @@ public class Board : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // TODO: Find a way to load game objects faster than the game so
-        // It doesn't need to wait 
-        //Invoke("SetUpBoard", 2f);
+        
     }
 
     public static void SetUpBoard()
@@ -113,25 +112,4 @@ public class Board : MonoBehaviour
     }
 }
 
-public class MyStep
-{
 
-    private Vector3 position;
-    private int index;
-    private Question question;
-    private GameEvent gameEvent;
-    private string[] playersInside;
-
-    public MyStep(Vector3 position, int index)
-    {
-        this.Position = position;
-        this.Index = index;
-    }
-
-
-
-    public Vector3 Position { get => position; set => position = value; }
-    public int Index { get => index; set => index = value; }
-    public Question Question { get => question; set => question = value; }
-    public GameEvent GameEvent { get => gameEvent; set => gameEvent = value; }
-}

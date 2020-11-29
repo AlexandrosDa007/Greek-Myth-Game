@@ -19,4 +19,10 @@ public class MainMenu : MonoBehaviour
             Debug.LogError("Couldn't load firebase manager");
         }
     }
+
+
+    public void PlayOnline()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+    }
 }

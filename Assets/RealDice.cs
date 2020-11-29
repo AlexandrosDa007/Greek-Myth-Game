@@ -7,6 +7,7 @@ public class RealDice : MonoBehaviour
 
     public Rigidbody rb;
     public Player player;
+    public PlayerOnline playerOnline;
     public Enemy enemy;
     public DiceSide[] diceSides;
     public bool thrown;
@@ -47,7 +48,11 @@ public class RealDice : MonoBehaviour
             {
                 diceValue = side.sideValue;
                 thrown = true;
-
+                if (Board.isMultiplayer)
+                {
+                    playerOnline.Move(diceValue);
+                    return;
+                }
                 if (Dice.turn == "player"){
                     player.MovePlayer(diceValue);
                 }

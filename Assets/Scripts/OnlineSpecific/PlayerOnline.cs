@@ -1,25 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
-using UnityEngine.SceneManagement;
 using Scripts.GameModels;
-public class Player : MonoBehaviour
+using Scripts.Objects;
+using TMPro;
+
+public class PlayerOnline : MonoBehaviour
 {
+
 
     public AudioClip moveSound;
     public GameObject gameOverWindow;
     public GameObject questionWindow;
     public GameObject eventWindow;
-    public Enemy enemy;
+
     private int Startingstep;
     private string playerPosition;
+
+    private FirebaseUser user;
+
+    public FirebaseUser User { get => user; set => user = value; }
+
+    public EnemyOnline[] enemies;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
-
+        // load up user?
+        //FirebaseAuth.CurrentUser(gameObject.name, "GetCurrentUser", "ErrorCurrentUser");
+        // TODO: find a way to select position for players?
         Startingstep = 1;
         switch (gameObject.name)
         {
@@ -44,22 +54,31 @@ public class Player : MonoBehaviour
                     break;
                 }
         }
-
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GetCurrentUser(string json)
     {
+        try
+        {
+            User = JsonUtility.FromJson<FirebaseUser>(json);
+        }
+        catch (System.Exception)
+        {
+            Debug.LogError("Error  when getting user!!");
+            throw new System.Exception("Error when getting current user");
+        }
     }
 
-    public void MovePlayer(int number)
+    public void Move(int number)
     {
         int newStep = -999;
         switch (number)
         {
             case 0:
                 {
-                    newStep = Startingstep + Dice.diceResult;
+                    // Shouldn't be used?
+                    Debug.Log("WTF");
+                    newStep = Startingstep + DiceOnline.diceResult;
                     break;
                 }
             case 1:
@@ -79,12 +98,11 @@ public class Player : MonoBehaviour
                 }
         }
 
-        StartCoroutine(Move(Startingstep, newStep));
-
+        StartCoroutine(MoveSteps(Startingstep, newStep));
     }
 
 
-    private IEnumerator Move(int step, int newStep)
+    private IEnumerator MoveSteps(int step, int newStep)
     {
         Vector3 newPosition = new Vector3(0, 0, 0);
         // When the player goes back
@@ -103,13 +121,13 @@ public class Player : MonoBehaviour
                         }
                     case "botleft":
                         {
-                            newPosition.y -= 5f;
+                            newPosition.z -= 6f;
                             break;
                         }
                     case "botright":
                         {
                             newPosition.x += 6f;
-                            newPosition.y -= 5f;
+                            newPosition.z -= 6f;
                             break;
                         }
 
@@ -117,6 +135,7 @@ public class Player : MonoBehaviour
                 transform.position = newPosition;
                 // Play sound
                 GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
+                FirebaseDatabase.PostJSON("game/positions/"+User.uid, i+"", gameObject.name, "OnPostSuccess", "OnPostFail");
                 yield return new WaitForSeconds(0.2f);
             }
         }
@@ -138,13 +157,13 @@ public class Player : MonoBehaviour
                         }
                     case "botleft":
                         {
-                            newPosition.y -= 5f;
+                            newPosition.z -= 6f;
                             break;
                         }
                     case "botright":
                         {
                             newPosition.x += 6f;
-                            newPosition.y -= 5f;
+                            newPosition.z -= 6f;
                             break;
                         }
 
@@ -152,6 +171,7 @@ public class Player : MonoBehaviour
                 transform.position = newPosition;
                 // Play sound
                 GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
+                FirebaseDatabase.PostJSON("game/positions/"+User.uid, i+"", gameObject.name, "OnPostSuccess", "OnPostFail");
                 if (i == 49)
                 {
                     Debug.Log("telos");
@@ -165,66 +185,64 @@ public class Player : MonoBehaviour
         }
         // Let player roll a dice again
         Startingstep = newStep;
-        checkIfQuestion();
-        checkIfEvent();
-        if (!checkIfQuestion() && !checkIfEvent())
+        bool isQuestion = CheckIfQuestion();
+        bool isEvent = CheckIfEvent();
+        if (!isQuestion && !isEvent)
         {
-            Dice.turn = "enemy";
-            enemy.RollDiceForEnemy();
+            // change turns..
+            // Go write 
+            DiceOnline.isRolling = false;
+            ServerManager.NextTurn();
         }
     }
 
-
-    public bool checkIfEvent()
+    public void EndGame()
     {
-        GameEvent e = Board.GetStepFromIndex(Startingstep).GameEvent;
-        if (e != null)
-        {
-            EventManger em = eventWindow.GetComponent<EventManger>();
-            eventWindow.SetActive(true);
-            em.SetGameEvent(e);
-            Dice.isRolling = true;
-            return true;
-        }
-        return false;
-
+        Debug.Log("User with uid: " + User.uid + "...**WON**");
     }
 
-    public bool checkIfQuestion()
+    public bool CheckIfQuestion()
     {
         Question q = Board.GetStepFromIndex(Startingstep).Question;
         if (q != null)
         {
             // TODO: get question window ready
             QuestionManager qm = questionWindow.GetComponent<QuestionManager>();
+            qm.playerOnline = this;
             qm.SetQuestion(q);
             qm.questionText.GetComponent<TextMeshProUGUI>().text = qm.Question.question;
             questionWindow.SetActive(true);
-            Dice.isRolling = true;
+            DiceOnline.isRolling = true;
             return true;
         }
 
         return false;
     }
 
-    public void EndGame()
+    public bool CheckIfEvent()
     {
-        StartCoroutine(EndGameTimer());
-        
-    }
-
-    private IEnumerator EndGameTimer()
-    {
-        for (int i = 0; i < 5; i++)
+        GameEvent e = Board.GetStepFromIndex(Startingstep).GameEvent;
+        if (e != null)
         {
-            gameOverWindow.SetActive(true);
-            gameOverWindow.GetComponentInChildren<TextMeshProUGUI>().text = "Player wins!\nQuiting in "+(5-i)+" sec...";
-            yield return new WaitForSeconds(1f);
-
+            EventManger em = eventWindow.GetComponent<EventManger>();
+            eventWindow.SetActive(true);
+            em.playerOnline = this;
+            em.SetGameEvent(e);
+            DiceOnline.isRolling = true;
+            return true;
         }
-        //UnityEditor.EditorApplication.isPlaying = false;
-        // Go to menu
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        return false;
+
     }
 
+    public void OnPostSuccess(string successMessage)
+    {
+        Debug.Log("Success! moved player" + successMessage);
+    }
+
+    public void OnPostFail(string errorMessage)
+    {
+        Debug.LogError("Error on post!" + errorMessage);
+    }
 }
+

@@ -4,6 +4,9 @@ using UnityEngine;
 using TMPro;
 using Scripts.Objects;
 using UnityEngine.SceneManagement;
+
+
+
 public class FirebaseManager : MonoBehaviour
 {
 
@@ -21,6 +24,7 @@ public class FirebaseManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         FirebaseAuth.OnAuthStateChanged(gameObject.name, "OnUserSignedIn", "OnUserSignedOut");
+        FirebaseDatabase.ListenForValueChanged("test", gameObject.name, "OnValueChanged", "ErrorValueChanged");
     }
 
     public void CreateUser()
@@ -96,5 +100,18 @@ public class FirebaseManager : MonoBehaviour
     public void OnFailLogout(string errorMessage)
     {
         Debug.Log("Current user cannot logout!! error: " + errorMessage);
+    }
+
+
+    public void OnValueChanged(string value)
+    {
+        FirebaseTest parsedObj = JsonUtility.FromJson<FirebaseTest>(value);
+        Debug.Log("test name is : " + parsedObj.name);
+        Debug.Log("test power is : " + parsedObj.power);
+    }
+
+    public void ErrorValueChanged(string errorMessage)
+    {
+        Debug.LogError("Error change value! " + errorMessage);
     }
 }
