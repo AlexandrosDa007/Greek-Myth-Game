@@ -55,11 +55,25 @@ public class EnemyOnline : MonoBehaviour
 
     public void OnValueChanged(string positionIndex)
     {
-        Debug.Log(positionIndex);
-        // int newStep = int.Parse(positionIndex);
+        int newStep = 0;
+        try
+        {
+            Debug.Log(positionIndex);
+            newStep = int.Parse(positionIndex);
+            // move to this step
+            if (newStep > 1)
+                MoveToStep(newStep);
+            Debug.Log("newStep" + newStep);
+        }
+        catch (System.Exception e)
+        {
 
-        // // move to this step
-        // MoveToStep(newStep);
+            Debug.LogError("Error parsing! :" +positionIndex);
+            throw new System.Exception(e.Message);
+        }
+
+
+
     }
 
     public void MoveToStep(int newStep)
@@ -92,8 +106,9 @@ public class EnemyOnline : MonoBehaviour
         transform.position = newPosition;
         step = newStep;
 
-        CheckIfQuestion();
-        CheckIfEvent();
+        // TODO :fix issue
+        // CheckIfQuestion();
+        // CheckIfEvent();
     }
 
 

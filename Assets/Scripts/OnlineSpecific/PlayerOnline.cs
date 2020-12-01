@@ -4,6 +4,8 @@ using UnityEngine;
 using Scripts.GameModels;
 using Scripts.Objects;
 using TMPro;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class PlayerOnline : MonoBehaviour
 {
@@ -171,7 +173,8 @@ public class PlayerOnline : MonoBehaviour
                 transform.position = newPosition;
                 // Play sound
                 GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
-                FirebaseDatabase.PostJSON("game/positions/"+User.uid, i+"", gameObject.name, "OnPostSuccess", "OnPostFail");
+
+                FirebaseDatabase.WriteToPosition("game/positions/"+User.uid, i, gameObject.name, "OnPostSuccess", "OnPostFail");
                 if (i == 49)
                 {
                     Debug.Log("telos");

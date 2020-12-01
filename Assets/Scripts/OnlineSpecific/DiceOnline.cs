@@ -11,8 +11,8 @@ public class DiceOnline : MonoBehaviour
 
     public static int diceResult;
     public static bool isRolling = false;
-    public static string turnId;
-    
+    public static string turnId = "";
+
     // Maybe player online?
     //public static Player[] players;
 
@@ -22,6 +22,7 @@ public class DiceOnline : MonoBehaviour
     public Sprite enabledSprite;
     public Sprite disabledSprite;
     public Button button;
+    public int index = 0;
 
     void Start()
     {
@@ -29,13 +30,20 @@ public class DiceOnline : MonoBehaviour
         isRolling = false;
         button = gameObject.GetComponent<Button>();
         button.interactable = false;
+        gameObject.GetComponent<Image>().sprite = disabledSprite;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-            
-        if (DiceOnline.turnId == appPlayer.User.uid  && !button.interactable && !isRolling)
+        if (index == 0)
+        {
+            Debug.Log("dice is : " + DiceOnline.turnId);
+            Debug.Log("app player is : " + appPlayer.User.uid);
+            index++;
+        }
+        if (DiceOnline.turnId == appPlayer.User.uid && !button.interactable && !isRolling)
         {
             button.interactable = true;
             gameObject.GetComponent<Image>().sprite = enabledSprite;
