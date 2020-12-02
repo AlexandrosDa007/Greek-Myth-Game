@@ -52,6 +52,64 @@ mergeInto(LibraryManager.library, {
         }
     },
 
+    WriteAnswer: function(path, answer, objectName, callback, fallback) {
+        var parsedPath = Pointer_stringify(path);
+        var parsedObjectName = Pointer_stringify(objectName);
+        var parsedCallback = Pointer_stringify(callback);
+        var parsedFallback = Pointer_stringify(fallback);
+
+
+        console.log(answer);
+        console.log(Pointer_stringify(answer));
+
+        try {
+
+            firebase.database().ref(parsedPath).set(answer).then(function(unused) {
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
+            });
+
+        } catch (error) {
+            window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        }
+    },
+
+    RemoveFromLocation: function(path, objectName, callback, fallback) {
+        var parsedPath = Pointer_stringify(path);
+        var parsedObjectName = Pointer_stringify(objectName);
+        var parsedCallback = Pointer_stringify(callback);
+        var parsedFallback = Pointer_stringify(fallback);
+
+        try {
+
+            firebase.database().ref(parsedPath).set(null).then(function(unused) {
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
+            });
+
+        } catch (error) {
+            window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        }
+    },
+
+    WriteQuestion: function(path, question, objectName, callback, fallback) {
+        var parsedPath = Pointer_stringify(path);
+        var parsedObjectName = Pointer_stringify(objectName);
+        var parsedCallback = Pointer_stringify(callback);
+        var parsedFallback = Pointer_stringify(fallback);
+
+        var parsedQuestion = Pointer_stringify(question);
+        console.log(parsedQuestion);
+
+        try {
+
+            firebase.database().ref(parsedPath).set(JSON.parse(parsedQuestion)).then(function(unused) {
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
+            });
+
+        } catch (error) {
+            window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        }
+    },
+
     PushJSON: function(path, value, objectName, callback, fallback) {
         var parsedPath = Pointer_stringify(path);
         var parsedValue = Pointer_stringify(value);

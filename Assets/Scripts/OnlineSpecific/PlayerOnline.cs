@@ -25,6 +25,7 @@ public class PlayerOnline : MonoBehaviour
 
     public EnemyOnline[] enemies;
 
+    private Question q;
 
     // Start is called before the first frame update
     void Start()
@@ -137,7 +138,7 @@ public class PlayerOnline : MonoBehaviour
                 transform.position = newPosition;
                 // Play sound
                 GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
-                FirebaseDatabase.PostJSON("game/positions/"+User.uid, i+"", gameObject.name, "OnPostSuccess", "OnPostFail");
+                FirebaseDatabase.WriteToPosition("game/positions/" + User.uid, i, gameObject.name, "OnPostSuccess", "OnPostFail");
                 yield return new WaitForSeconds(0.2f);
             }
         }
@@ -173,8 +174,7 @@ public class PlayerOnline : MonoBehaviour
                 transform.position = newPosition;
                 // Play sound
                 GameObject.FindGameObjectWithTag("soundEffects").GetComponent<SoundEffects>().PlaySoundEffect(moveSound);
-
-                FirebaseDatabase.WriteToPosition("game/positions/"+User.uid, i, gameObject.name, "OnPostSuccess", "OnPostFail");
+                FirebaseDatabase.WriteToPosition("game/positions/" + User.uid, i, gameObject.name, "OnPostSuccess", "OnPostFail");
                 if (i == 49)
                 {
                     Debug.Log("telos");
@@ -193,7 +193,7 @@ public class PlayerOnline : MonoBehaviour
         if (!isQuestion && !isEvent)
         {
             // change turns..
-            // Go write 
+            // Go write
             DiceOnline.isRolling = false;
             ServerManager.NextTurn();
         }
@@ -207,16 +207,21 @@ public class PlayerOnline : MonoBehaviour
     public bool CheckIfQuestion()
     {
         Question q = Board.GetStepFromIndex(Startingstep).Question;
+        this.q = q;
         if (q != null)
         {
-            // TODO: get question window ready
-            QuestionManager qm = questionWindow.GetComponent<QuestionManager>();
-            qm.playerOnline = this;
-            qm.SetQuestion(q);
-            qm.questionText.GetComponent<TextMeshProUGUI>().text = qm.Question.question;
-            questionWindow.SetActive(true);
-            DiceOnline.isRolling = true;
+            JObject questionObj = new JObject();
+            questionObj.Add("text",q.question);
+            for (int i = 0; i < q.answers.Length; i++)
+            {
+                questionObj.Add("answer"+(i+1), q.answers[i]);
+
+            }
+            questionObj.Add("correct", q.correct);
+            FirebaseDatabase.WriteQuestion("room/room1/question/"+user.uid, JsonConvert.SerializeObject(questionObj), gameObject.name, "OnQuestionSuccess", "OnPostFail");
             return true;
+            // TODO: get question window ready
+
         }
 
         return false;
@@ -235,6 +240,17 @@ public class PlayerOnline : MonoBehaviour
             return true;
         }
         return false;
+
+    }
+
+    public void OnQuestionSuccess(string successMessage)
+    {
+        QuestionManager qm = questionWindow.GetComponent<QuestionManager>();
+        qm.playerOnline = this;
+        qm.SetQuestion(q);
+        qm.questionText.GetComponent<TextMeshProUGUI>().text = qm.Question.question;
+        questionWindow.SetActive(true);
+        DiceOnline.isRolling = true;
 
     }
 

@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-
+using Newtonsoft.Json.Linq;
 public static class FirebaseDatabase
 {
     /// <summary>
@@ -35,6 +35,42 @@ public static class FirebaseDatabase
     /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
     [DllImport("__Internal")]
     public static extern void WriteToPosition(string path, int position, string objectName, string callback,
+        string fallback);
+
+    /// <summary>
+    /// Write the question
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="obj"> JSON string to post to the specified path </param>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void WriteQuestion(string path, string obj, string objectName, string callback,
+        string fallback);
+
+
+    /// <summary>
+    /// Remove object from path
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void RemoveFromLocation(string path, string objectName, string callback,
+        string fallback);
+
+    /// <summary>
+    /// Write the answer
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="obj"> JSON string to post to the specified path </param>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void WriteAnswer(string path, string answer, string objectName, string callback,
         string fallback);
 
     /// <summary>

@@ -24,6 +24,8 @@ public class QuestionManager : MonoBehaviour
 
     public string answer;
 
+    private int stepToMove;
+
     void Start()
     {
 
@@ -59,7 +61,7 @@ public class QuestionManager : MonoBehaviour
 
         if (Board.isMultiplayer)
         {
-            FirebaseDatabase.PostJSON("game/question/" + playerOnline.User.uid + "/answer", answer, gameObject.name, "OnSuccess", "OnError");
+            FirebaseDatabase.WriteAnswer("rooms/room1/question/" + playerOnline.User.uid + "/userAnswer", answer, gameObject.name, "OnSuccess", "OnError");
             return;
         }
 
@@ -77,25 +79,29 @@ public class QuestionManager : MonoBehaviour
         }
     }
 
-    public void OnSuccess(string data)
+    public void OnSuccess(string successMessage)
     {
         // Everything went ok
         if (this.question.correct == answer)
         {
             this.gameObject.SetActive(false);
-            playerOnline.Move(1);
-            return;
+            stepToMove = 1;
         }
         else
         {
             // TODO: Display better wrong message!!
             Debug.Log("Lathosss!!");
             player.questionWindow.SetActive(false);
-
-            playerOnline.Move(-1);
-            return;
-
+            stepToMove = -1;
         }
+
+        // TODO: remove question and answer from db...
+        FirebaseDatabase.RemoveFromLocation("rooms/room1/question/" + playerOnline.User.uid + "/userAnswer", gameObject.name, "OnRemoveSuccess", "OnError");
+    }
+
+    public void OnRemoveSuccess(string successMessage)
+    {
+        playerOnline.Move(stepToMove);
     }
 
     public void OnError(string errorMessage)
