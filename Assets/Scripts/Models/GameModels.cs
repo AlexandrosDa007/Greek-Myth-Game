@@ -20,6 +20,11 @@ namespace Scripts.GameModels
             this.answers = answers;
             this.correct = correct;
         }
+
+        public Question()
+        {
+            
+        }
     }
 
     [Serializable]

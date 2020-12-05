@@ -218,7 +218,7 @@ public class PlayerOnline : MonoBehaviour
 
             }
             questionObj.Add("correct", q.correct);
-            FirebaseDatabase.WriteQuestion("room/room1/question/"+user.uid, JsonConvert.SerializeObject(questionObj), gameObject.name, "OnQuestionSuccess", "OnPostFail");
+            FirebaseDatabase.WriteQuestion("rooms/room1/question/"+user.uid, JsonConvert.SerializeObject(questionObj), gameObject.name, "OnQuestionSuccess", "OnPostFail");
             return true;
             // TODO: get question window ready
 

@@ -119,6 +119,17 @@ public static class FirebaseDatabase
         string fallback);
 
     /// <summary>
+    /// Listens for answer
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="objectName"> Name of the gameobject to call the onValueChanged/fallback of </param>
+    /// <param name="onValueChanged"> Name of the method to call when the listener is triggered. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void ListenForAnswer(string path, string objectName, string onValueChanged,
+        string fallback);
+
+    /// <summary>
     /// Stops listening for value changed on a specific path
     /// </summary>
     /// <param name="path"> Database Path </param>

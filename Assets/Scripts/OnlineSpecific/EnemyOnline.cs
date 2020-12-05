@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 public class EnemyOnline : MonoBehaviour
 {
 
+    public GameObject questionWindow;
+
     public FirebaseUser user;
 
     public int step;
@@ -45,9 +47,10 @@ public class EnemyOnline : MonoBehaviour
                 }
         }
         step = 1;
+        Board.SetUpBoard();
         FirebaseDatabase.ListenForValueChanged("game/positions/" + user.uid, gameObject.name, "OnValueChanged", "OnError");
-        FirebaseDatabase.ListenForValueChanged("room/room1/question/" + user.uid, gameObject.name, "OnQuestionChange", "OnQuestionError");
-        FirebaseDatabase.ListenForValueChanged("room/room1/" + user.uid+"/userAnswer", gameObject.name, "OnAnswerSuccess", "OnQuestionError");
+        FirebaseDatabase.ListenForValueChanged("rooms/room1/question/" + user.uid, gameObject.name, "OnQuestionChange", "OnQuestionError");
+        FirebaseDatabase.ListenForAnswer("rooms/room1/answers/" + user.uid, gameObject.name, "OnAnswerSuccess", "OnQuestionError");
     }
 
     // Update is called once per frame
@@ -71,7 +74,7 @@ public class EnemyOnline : MonoBehaviour
         catch (System.Exception e)
         {
 
-            Debug.LogError("Error parsing! :" + positionIndex);
+            Debug.LogError("Error parsing position! :" + positionIndex);
             throw new System.Exception(e.Message);
         }
 
@@ -159,68 +162,77 @@ public class EnemyOnline : MonoBehaviour
     public void OnQuestionChange(string json)
     {
         Debug.Log(json);
-        Debug.Log("ola kala");
-        JObject quuu = JsonUtility.FromJson<JObject>(json);
-        Debug.Log("ola kala 2?");
-        Debug.Log(quuu.GetValue("text"));
-        // if (json == "" || json == null || json == "null") {
-        //     Debug.Log("To json htan adeio! QuestionChange");
-        //     return;
-        // }
-        // // TODO: get question from json
-        // Question question = null;
-        // try
-        // {
-        //     JObject questionObj = JsonConvert.DeserializeObject<JObject>(json);
-        //     question.question = questionObj.GetValue("text").ToObject<string>();
-        //     question.correct = questionObj.GetValue("correct").ToObject<string>();
-        //     for (int i = 0; i < 4; i++)
-        //     {
-        //         question.answers[i] = questionObj.GetValue("answer" + (i + 1)).ToObject<string>();
-        //     }
-        // }
-        // catch (System.Exception e)
-        // {
-        //     Debug.LogError("Error when deserialize object!");
-        //     throw new System.Exception(e.Message);
-        // }
+        if (json == "" || json == null || json == "null")
+        {
+            Debug.Log("Den yparxei question abort!!");
+            return;
+        }
+        Debug.Log("Try deserialize");
+        JObject quuu = JsonConvert.DeserializeObject<JObject>(json);
+        Debug.Log("done deserialize");
+        // TODO: get question from json
+        string[] kati = new string[4];
+        kati[0] = "ans0";
+        kati[1] = "ans1";
+        kati[2] = "ans2";
+        kati[3] = "ans3";
+        Question question = new Question("poios?", kati, "ans3");
+        Debug.Log("done questioning hahaha");
+        int ind = 0;
+        foreach (JProperty prop in quuu.Properties())
+        {
+            switch (prop.Name)
+            {
+                case "text":
+                    {
+                        question.question = prop.Value.ToString();
+                        continue;
+                    }
+                case "correct":
+                    {
+                        question.correct = prop.Value.ToString();
+                        continue;
+                    }
 
-        // Debug.Log(question.answers[0]);
-        // // Open question window
-        // GameObject.Find("QuestionWindow").SetActive(true);
-        // GameObject.Find("QuestionWindow").GetComponent<QuestionManager>().SetQuestion(question);
-        // for (int i = 0; i < 4; i++)
-        // {
-        //     GameObject.Find("QuestionWindow").GetComponent<QuestionManager>().answerButtons[i].GetComponent<Button>().interactable = false;
-        // }
+                default:
+                    {
+                        question.answers[ind] = prop.Value.ToString();
+                        ind++;
+                        continue;
+                    }
+            }
+        }
+
+
+        Debug.Log("done getting question");
+
+        Debug.Log("Opening Question Window...");
+        // Open question window
+        questionWindow.SetActive(true);
+        questionWindow.GetComponent<QuestionManager>().SetQuestion(question);
+        for (int i = 0; i < 4; i++)
+        {
+            questionWindow.GetComponent<QuestionManager>().answerButtons[i].GetComponent<Button>().interactable = false;
+        }
     }
 
 
     public void OnAnswerSuccess(string answerJson)
     {
         Debug.Log(answerJson);
-        if (answerJson == "" || answerJson == null || answerJson == "null") {
+        if (answerJson == "" || answerJson == null || answerJson == "null")
+        {
             Debug.Log("To json htan adeio! OnAnswerSuccess");
             return;
         }
         Debug.Log("pige edw prin spasei? 1");
-        string answer = "";
-        try
-        {
-            answer = JsonUtility.FromJson<string>(answerJson);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError("error when getting answer json!" + e.Message);
-            throw new System.Exception(e.Message);
-        }
-        
-        // Show stuff...
-        Debug.Log("I apantisi einai: " + answer);
+        string answer = answerJson;
 
+        // Show stuff...
+        Debug.Log("O antipalos apantise:  " + answer);
 
         // and close stuff..
-        GameObject.Find("QuestionWindow").SetActive(false);
+        questionWindow.SetActive(false);
         Debug.Log("pige edw prin spasei? 2");
 
     }

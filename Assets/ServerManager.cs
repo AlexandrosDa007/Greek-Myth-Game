@@ -131,6 +131,7 @@ public class ServerManager : MonoBehaviour
             enemy.name = playerDic[item.Key];
             enemy.AddComponent<EnemyOnline>();
             EnemyOnline e = enemy.GetComponent<EnemyOnline>();
+            e.questionWindow = this.questionWindow;
             e.user = new FirebaseUser();
             e.user.uid = item.Key;
             i++;
@@ -203,6 +204,11 @@ public class ServerManager : MonoBehaviour
         Debug.LogError("SOMETHING WENT WRONG");
 
         return null;
+    }
+
+    public void OnRoomFail(string errorMessage)
+    {
+        Debug.LogError("OnRoomFail error: " +errorMessage);
     }
 
    

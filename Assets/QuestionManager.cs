@@ -61,7 +61,7 @@ public class QuestionManager : MonoBehaviour
 
         if (Board.isMultiplayer)
         {
-            FirebaseDatabase.WriteAnswer("rooms/room1/question/" + playerOnline.User.uid + "/userAnswer", answer, gameObject.name, "OnSuccess", "OnError");
+            FirebaseDatabase.WriteAnswer("rooms/room1/answers/" + playerOnline.User.uid, answer, gameObject.name, "OnSuccess", "OnError");
             return;
         }
 
@@ -84,23 +84,23 @@ public class QuestionManager : MonoBehaviour
         // Everything went ok
         if (this.question.correct == answer)
         {
-            this.gameObject.SetActive(false);
             stepToMove = 1;
         }
         else
         {
             // TODO: Display better wrong message!!
             Debug.Log("Lathosss!!");
-            player.questionWindow.SetActive(false);
             stepToMove = -1;
         }
 
         // TODO: remove question and answer from db...
-        FirebaseDatabase.RemoveFromLocation("rooms/room1/question/" + playerOnline.User.uid + "/userAnswer", gameObject.name, "OnRemoveSuccess", "OnError");
+        FirebaseDatabase.RemoveFromLocation("rooms/room1/question", gameObject.name, "RemoveQ" , "OnError");
+        FirebaseDatabase.RemoveFromLocation("rooms/room1/answers/" + playerOnline.User.uid, gameObject.name, "OnRemoveSuccess", "OnError");
     }
 
     public void OnRemoveSuccess(string successMessage)
     {
+        gameObject.SetActive(false);
         playerOnline.Move(stepToMove);
     }
 
@@ -109,4 +109,8 @@ public class QuestionManager : MonoBehaviour
         Debug.LogError("Error when writing answer " + errorMessage);
     }
 
+    public void RemoveQ(string successMessage)
+    {
+        Debug.Log("success Removeq" + successMessage);
+    }
 }

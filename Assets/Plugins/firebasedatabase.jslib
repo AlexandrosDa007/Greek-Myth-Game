@@ -57,14 +57,12 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = Pointer_stringify(objectName);
         var parsedCallback = Pointer_stringify(callback);
         var parsedFallback = Pointer_stringify(fallback);
+        var parsedAnswer = Pointer_stringify(answer);
 
-
-        console.log(answer);
-        console.log(Pointer_stringify(answer));
 
         try {
 
-            firebase.database().ref(parsedPath).set(answer).then(function(unused) {
+            firebase.database().ref(parsedPath).set(parsedAnswer).then(function(unused) {
                 window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
             });
 
@@ -173,6 +171,27 @@ mergeInto(LibraryManager.library, {
 
             firebase.database().ref(parsedPath).on('value', function(snapshot) {
                 window.unityInstance.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(snapshot.val()));
+            });
+
+        } catch (error) {
+            window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        }
+    },
+
+    ListenForAnswer: function(path, objectName, callback, fallback) {
+        var parsedPath = Pointer_stringify(path);
+        var parsedObjectName = Pointer_stringify(objectName);
+        var parsedCallback = Pointer_stringify(callback);
+        var parsedFallback = Pointer_stringify(fallback);
+
+        try {
+
+            firebase.database().ref(parsedPath).on('value', function(snapshot) {
+                console.log(snapshot);
+                console.log('try1');
+                var val = snapshot.val() ? snapshot.val() : 'null';
+                console.log('val is: ' + val);
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, val);
             });
 
         } catch (error) {
