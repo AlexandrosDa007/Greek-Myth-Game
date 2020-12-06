@@ -29,6 +29,6 @@ public class SettingsWindow : MonoBehaviour
 
     public void QuitToMenu()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }
 }

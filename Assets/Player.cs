@@ -224,7 +224,7 @@ public class Player : MonoBehaviour
         }
         //UnityEditor.EditorApplication.isPlaying = false;
         // Go to menu
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 2);
     }
 
 }

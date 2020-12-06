@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
 {
     public void PlayOffline()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
     }
 
     public void Logout()
@@ -23,6 +23,6 @@ public class MainMenu : MonoBehaviour
 
     public void PlayOnline()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 2);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

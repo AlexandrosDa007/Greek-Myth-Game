@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Scripts.Objects;
 
 namespace Scripts.GameModels
 {
@@ -23,7 +24,7 @@ namespace Scripts.GameModels
 
         public Question()
         {
-            
+
         }
     }
 
@@ -66,5 +67,24 @@ namespace Scripts.GameModels
         public int Index { get => index; set => index = value; }
         public Question Question { get => question; set => question = value; }
         public GameEvent GameEvent { get => gameEvent; set => gameEvent = value; }
+    }
+
+
+    [Serializable]
+    public class JRoom
+    {
+        public string roomHost { get; set; }
+        public string roomName { get; set; }
+        public int maxPlayers { get; set; }
+        public int activePlayers { get; set; }
+        public string difficulty { get; set; }
+        public string roomUid { get; set; }
+        public JUser[] players { get; set; }
+    }
+    [Serializable]
+    public class JUser
+    {
+        public string uid {get; set;}
+        public string displayName {get;set;}    
     }
 }

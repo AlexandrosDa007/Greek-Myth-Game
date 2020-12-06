@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Scripts.GameModels;
 namespace Scripts.Objects
 {
     [Serializable]
@@ -18,6 +18,8 @@ namespace Scripts.Objects
         public string phoneNumber;
         
         public string uid;
+
+        public JUser user;
     }
 
 

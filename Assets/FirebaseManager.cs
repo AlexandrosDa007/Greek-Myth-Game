@@ -4,7 +4,9 @@ using UnityEngine;
 using TMPro;
 using Scripts.Objects;
 using UnityEngine.SceneManagement;
-
+using Scripts.GameModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 public class FirebaseManager : MonoBehaviour
@@ -15,6 +17,7 @@ public class FirebaseManager : MonoBehaviour
     public GameObject email;
     public GameObject password;
     public GameObject passwordConfirm;
+    public GameObject userName;
 
     public GameObject loginHandler;
     public GameObject registerError;
@@ -32,6 +35,7 @@ public class FirebaseManager : MonoBehaviour
         string emailText = email.GetComponentInChildren<TMP_InputField>().text;
         string passwordText = password.GetComponentInChildren<TMP_InputField>().text;
         string passConfirmText = passwordConfirm.GetComponentInChildren<TMP_InputField>().text;
+        string username = userName.GetComponentInChildren<TMP_InputField>().text;
 
         if (passwordText != passConfirmText)
         {
@@ -44,7 +48,7 @@ public class FirebaseManager : MonoBehaviour
             registerError.SetActive(false);
         }
 
-        FirebaseAuth.CreateUserWithEmailAndPassword(emailText, passwordText, gameObject.name, "Good", "DisplayError");
+        FirebaseAuth.CreateUserWithEmailAndPassword(emailText, passwordText, username, gameObject.name, "Good", "DisplayError");
 
         
     }
@@ -75,9 +79,23 @@ public class FirebaseManager : MonoBehaviour
         FirebaseUser u = JsonUtility.FromJson<FirebaseUser>(user);
         // User signed in
         currentUser = u;
-        Debug.Log("User signedIn" + currentUser.uid);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         
+        FirebaseDatabase.ListenForValueChanged("users/" + currentUser.uid, gameObject.name, "OnUser", "OnUserSignedOut");
+    }
+
+    public void OnUser(string json)
+    {
+        try
+        {
+            JUser juser = new JUser();
+            juser = JsonConvert.DeserializeObject<JUser>(json);
+            currentUser.user = juser;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        catch (System.Exception)
+        {
+            Debug.LogError("Error when deserialize juser");
+        }
     }
 
 

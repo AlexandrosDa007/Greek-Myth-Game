@@ -49,6 +49,17 @@ public static class FirebaseDatabase
     public static extern void WriteQuestion(string path, string obj, string objectName, string callback,
         string fallback);
 
+    /// <summary>
+    /// Join Room
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="obj"> JSON string to post to the specified path </param>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void JoinRoom(string path, string roomId, string userJson, string objectName, string callback,
+        string fallback);
 
     /// <summary>
     /// Remove object from path
@@ -71,6 +82,18 @@ public static class FirebaseDatabase
     /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
     [DllImport("__Internal")]
     public static extern void WriteAnswer(string path, string answer, string objectName, string callback,
+        string fallback);
+
+    /// <summary>
+    /// Create Room
+    /// </summary>
+    /// <param name="path"> Database path </param>
+    /// <param name="room"> JSON string to post to the specified path </param>
+    /// <param name="objectName"> Name of the gameobject to call the callback/fallback of </param>
+    /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
+    /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
+    [DllImport("__Internal")]
+    public static extern void CreateRoom(string path, string room, string userUid, string objectName, string callback,
         string fallback);
 
     /// <summary>
