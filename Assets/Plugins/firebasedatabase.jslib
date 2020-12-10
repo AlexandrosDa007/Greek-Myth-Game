@@ -130,7 +130,7 @@ mergeInto(LibraryManager.library, {
 
         try {
             firebase.database().ref(parsedPath + '/' + key).set(r).then(function(unused){
-                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Post is done!");
+                window.unityInstance.SendMessage(parsedObjectName, parsedCallback, key);
             });
         } catch (error) {
             window.unityInstance.SendMessage(parsedObjectName, parsedFallback, JSON.stringify(error, Object.getOwnPropertyNames(error)));

@@ -19,6 +19,10 @@ public class RoomManage : MonoBehaviour
 
     public string activeRoom;
 
+    public GameObject createRoomView;
+    public GameObject hostRoom;
+    public bool hostRoomLoading = false;
+
 
     public TMP_InputField createRoomName;
     public TMP_Dropdown diffultyDrop;
@@ -136,6 +140,7 @@ public class RoomManage : MonoBehaviour
             string userJson = JsonConvert.SerializeObject(FirebaseManager.currentUser.user);
             Debug.Log(json);
             FirebaseDatabase.CreateRoom("rooms", json, userJson, gameObject.name, "OnRoomCreation", "OnError");
+            hostRoomLoading = true;
         }
         catch (System.Exception e)
         {
@@ -145,10 +150,13 @@ public class RoomManage : MonoBehaviour
         
     }
 
-    public void OnRoomCreation()
+    public void OnRoomCreation(string roomKey)
     {
-        Debug.Log("Crated room! and joind");
 
+        Debug.Log("Crated room with id: " +roomKey);
+        hostRoomLoading = false;
+        hostRoom.GetComponent<HostRoom>().roomKey = roomKey;
+        hostRoom.SetActive(true);
         
     }
 }
