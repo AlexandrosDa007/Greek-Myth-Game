@@ -79,7 +79,7 @@ namespace Scripts.GameModels
         public int activePlayers { get; set; }
         public string difficulty { get; set; }
         public string roomId { get; set; }
-        public JUser[] players { get; set; }
+        public Dictionary<string, JUser> players { get; set; }
     }
     [Serializable]
     public class JUser

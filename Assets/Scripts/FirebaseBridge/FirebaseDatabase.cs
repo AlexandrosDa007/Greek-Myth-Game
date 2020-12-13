@@ -93,7 +93,7 @@ public static class FirebaseDatabase
     /// <param name="callback"> Name of the method to call when the operation was successful. Method must have signature: void Method(string output) </param>
     /// <param name="fallback"> Name of the method to call when the operation was unsuccessful. Method must have signature: void Method(string output). Will return a serialized FirebaseError object </param>
     [DllImport("__Internal")]
-    public static extern void CreateRoom(string path, string room, string userUid, string objectName, string callback,
+    public static extern void CreateRoom(string path, string room, string objectName, string callback,
         string fallback);
 
     /// <summary>

@@ -125,19 +125,18 @@ public class RoomManage : MonoBehaviour
         }
 
         JRoom obj = new JRoom();
-        obj.activePlayers = 0;
+        obj.activePlayers = 1;
         obj.roomHost = FirebaseManager.currentUser.uid;
         obj.difficulty = diff;
         obj.maxPlayers = maxP;
         obj.roomName = roomNameText;
-
+        obj.players = new Dictionary<string, JUser>();
+        obj.players.Add(FirebaseManager.currentUser.uid, FirebaseManager.currentUser.user);
         try
         {
-            string json = JsonConvert.SerializeObject(obj);
+            string json = JsonConvert.SerializeObject(obj, Formatting.Indented);
             FirebaseManager.currentUser.user.ready = false;
-            string userJson = JsonConvert.SerializeObject(FirebaseManager.currentUser.user);
-            Debug.Log(json);
-            FirebaseDatabase.CreateRoom("rooms", json, userJson, gameObject.name, "OnRoomCreation", "OnError");
+            FirebaseDatabase.CreateRoom("rooms", json, gameObject.name, "OnRoomCreation", "OnError");
             hostRoomLoading = true;
         }
         catch (System.Exception e)

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Scripts.GameModels;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,6 +33,7 @@ public class HostRoom : MonoBehaviour
 
     public void OnRoomGet(string roomJson)
     {
+        Debug.Log(roomJson);
         if (roomJson == "" || roomJson == null || roomJson == "null")
         {
             Debug.Log("room is null");
@@ -40,8 +42,51 @@ public class HostRoom : MonoBehaviour
         }
         try
         {
-            JRoom room = JsonConvert.DeserializeObject<JRoom>(roomJson);
-            currentRoom = room;
+            JObject room = JsonConvert.DeserializeObject<JObject>(roomJson);
+
+            foreach (JProperty prop in room.Properties())
+            {
+                switch (prop.Name)
+                {
+                    case "roomHost":
+                        {
+                            currentRoom.roomHost = prop.Value.ToString();
+                            continue;
+                        }
+                    case "roomName":
+                        {
+                            currentRoom.roomName = prop.Value.ToString();
+                            continue;
+                        }
+                    case "maxPlayer":
+                        {
+                            currentRoom.maxPlayers = int.Parse(prop.Value.ToString());
+                            continue;
+                        }
+                    case "activePlayers":
+                        {
+                            currentRoom.activePlayers = int.Parse(prop.Value.ToString());
+                            continue;
+                        }
+                    case "difficulty":
+                        {
+                            currentRoom.difficulty = prop.Value.ToString();
+                            continue;
+                        }
+                    case "roomId":
+                        {
+                            currentRoom.roomId = prop.Value.ToString();
+                            continue;
+                        }
+                    case "players":
+                        {
+                            currentRoom.players = prop.Value.ToObject<Dictionary<string, JUser>>();
+                            continue;
+                        }
+                }
+            }
+
+            Debug.Log(currentRoom.players.Keys.Count);
             if (currentRoom.roomHost == FirebaseManager.currentUser.uid)
             {
                 isRoomHost = true;
@@ -64,10 +109,14 @@ public class HostRoom : MonoBehaviour
             Destroy(pl.gameObject);
         }
 
-        foreach (JUser player in currentRoom.players)
+        foreach (KeyValuePair<string, JUser> player in currentRoom.players)
         {
             GameObject _temp = Instantiate(playerSetPrefab, playerGroup.transform.position, Quaternion.identity);
-            _temp.GetComponent<PlayerSet>().playerNameField.text = player.displayName;
+            if (player.Value.ready)
+            {
+                _temp.GetComponent<PlayerSet>().playerNameField.color = Color.green;
+            }
+            _temp.GetComponent<PlayerSet>().playerNameField.text = player.Value.displayName;
             _temp.transform.SetParent(playerGroup.transform);
 
         }
@@ -114,8 +163,8 @@ public class HostRoom : MonoBehaviour
     public void Ready()
     {
         // get ready
-        FirebaseDatabase.PushJSON("rooms/" + roomKey + "players",
-        FirebaseManager.currentUser.uid, gameObject.name, "OnReady", "OnError");
+        FirebaseDatabase.PostJSON("rooms/" + roomKey + "/players/" + FirebaseManager.currentUser.uid + "/ready",
+        "true", gameObject.name, "OnReady", "OnError");
 
     }
 

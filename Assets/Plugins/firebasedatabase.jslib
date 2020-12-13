@@ -108,25 +108,19 @@ mergeInto(LibraryManager.library, {
         }
     },
 
-    CreateRoom: function(path, room, user, objectName, callback, fallback) {
+    CreateRoom: function(path, room, objectName, callback, fallback) {
         var parsedPath = Pointer_stringify(path);
         var parsedObjectName = Pointer_stringify(objectName);
         var parsedCallback = Pointer_stringify(callback);
         var parsedFallback = Pointer_stringify(fallback);
         var parsedRoom = Pointer_stringify(room);
-        var parsedUser = Pointer_stringify(user);
-
-
+        
         var key = firebase.database().ref(parsedPath).push().key;
 
         console.log(parsedRoom);
 
         var r = JSON.parse(parsedRoom);
         r.roomId = key;
-        r.activePlayers = 1;
-        r.players = [];
-        r.players[0] = JSON.parse(parsedUser);
-        console.log('enta3ei me to room');
 
         try {
             firebase.database().ref(parsedPath + '/' + key).set(r).then(function(unused){
@@ -149,20 +143,15 @@ mergeInto(LibraryManager.library, {
 
         try {
             firebase.database().ref(parsedPath + '/' + parsedRoomId).transaction(function(data){
-                for (var i = 0;i < data.players.length; i++) {
-                    if (data.players[i].uid === userObject.uid) {
-                        console.log('You are already joined in this room');
-                        return;
-                    }
+                if (data.players[userObject.uid]) {
+                    console.log('already joined!');
+                    return;
                 }
                 console.log(parsedRoomId)
                 var actP = data.activePlayers;
                 if (actP < data.maxPlayers) {
                     // Can Join
-                    data.players[actP] = {
-                        displayName: userObject.displayName,
-                        uid: userObject.uid
-                    };
+                    data.players[userObject.uid] = userObject;
                     data.activePlayers++;
                     console.log(data);
                     return data;
