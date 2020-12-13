@@ -143,19 +143,28 @@ mergeInto(LibraryManager.library, {
         var parsedObjectName = Pointer_stringify(objectName);
         var parsedCallback = Pointer_stringify(callback);
         var parsedFallback = Pointer_stringify(fallback);
-        var parsedRoomId = Pointer_stringify(roomId);
+        const parsedRoomId = Pointer_stringify(roomId);
         var parsedUser = Pointer_stringify(user);
+        var userObject = JSON.parse(parsedUser);
 
         try {
-            firebase.database().ref(parsedPath + '/' +roomId).transaction(function(data){
+            firebase.database().ref(parsedPath + '/' + parsedRoomId).transaction(function(data){
+                for (var i = 0;i < data.players.length; i++) {
+                    if (data.players[i].uid === userObject.uid) {
+                        console.log('You are already joined in this room');
+                        return;
+                    }
+                }
+                console.log(parsedRoomId)
                 var actP = data.activePlayers;
                 if (actP < data.maxPlayers) {
                     // Can Join
-                    actP++;
                     data.players[actP] = {
-                        displayName: parsedUser.displayName,
-                        uid: parsedUser.uid
+                        displayName: userObject.displayName,
+                        uid: userObject.uid
                     };
+                    data.activePlayers++;
+                    console.log(data);
                     return data;
                 } else {
                     console.log('Could not join room!!');
@@ -170,6 +179,7 @@ mergeInto(LibraryManager.library, {
                     window.unityInstance.SendMessage(parsedObjectName, parsedFallback, "NO ROOM FOR YOU");
                 } else {
                     console.log('Joined room successfully!');
+                    window.unityInstance.SendMessage(parsedObjectName, parsedCallback, "Successffully joined");
                 }
             });
         } catch (error) {
@@ -291,6 +301,7 @@ mergeInto(LibraryManager.library, {
         try {
 
             firebase.database().ref(parsedPath).on('child_added', function(snapshot) {
+                console.log(snapshot.val());
                 window.unityInstance.SendMessage(parsedObjectName, parsedCallback, JSON.stringify(snapshot.val()));
             });
 

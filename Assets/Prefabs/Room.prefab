@@ -359,9 +359,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fa3f71e377f7fb4e8773da6c2f9e529, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roomId: 
-  activePlayers: 3
-  roomName: kati
+  joinRoomView: {fileID: 0}
+  joinedRoomView: {fileID: 0}
   joinButton: {fileID: 2500378505625407117}
   serverName: {fileID: 2500378504307148232}
   currentPlayers: {fileID: 2500378505706849519}
@@ -485,13 +484,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2500378504721498665}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 2500378504721498661}
+        m_TargetAssemblyTypeName: Room, Assembly-CSharp
+        m_MethodName: JoinRoom
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

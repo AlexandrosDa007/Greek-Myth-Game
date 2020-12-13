@@ -11,6 +11,8 @@ using Scripts.GameModels;
 public class RoomManage : MonoBehaviour
 {
 
+    public GameObject joinRoomView;
+    public GameObject joinedRoomView;
     public List<Room> rooms;
 
     public GameObject roomPrefab;
@@ -50,12 +52,15 @@ public class RoomManage : MonoBehaviour
 
     public void OnRoomAdded(string roomJson)
     {
-        // Destructre json to room
+        // Destructure json to room
         try
-        {
+        {  
+            
             JRoom roomObj = JsonConvert.DeserializeObject<JRoom>(roomJson);
             GameObject tempRoom = Instantiate(roomPrefab, transform.position, Quaternion.identity);
             tempRoom.GetComponent<Room>().SetRoom(roomObj);
+            tempRoom.GetComponent<Room>().joinRoomView = joinRoomView;
+            tempRoom.GetComponent<Room>().joinedRoomView = joinedRoomView;
             tempRoom.transform.SetParent(content.transform);
             rooms.Add(tempRoom.GetComponent<Room>());
 
@@ -126,17 +131,10 @@ public class RoomManage : MonoBehaviour
         obj.maxPlayers = maxP;
         obj.roomName = roomNameText;
 
-        JUser u = new JUser();
-        u.displayName = "alex";
-        u.uid = "pl1";
-
-        JUser u2 = new JUser();
-        u.displayName = "kwstas";
-        u.uid = "pl2";
-
         try
         {
             string json = JsonConvert.SerializeObject(obj);
+            FirebaseManager.currentUser.user.ready = false;
             string userJson = JsonConvert.SerializeObject(FirebaseManager.currentUser.user);
             Debug.Log(json);
             FirebaseDatabase.CreateRoom("rooms", json, userJson, gameObject.name, "OnRoomCreation", "OnError");

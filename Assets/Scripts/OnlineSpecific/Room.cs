@@ -10,6 +10,9 @@ using Newtonsoft.Json.Linq;
 public class Room : MonoBehaviour
 {
 
+    public GameObject joinRoomView;
+    public GameObject joinedRoomView;
+
     public JRoom room;
     public Button joinButton;
     public TextMeshProUGUI serverName;
@@ -30,6 +33,7 @@ public class Room : MonoBehaviour
     public void SetRoom(JRoom room)
     {
         this.room = room;
+        Debug.Log("2" + this.room.activePlayers);
         serverName.text = this.room.roomName;
         currentPlayers.text = this.room.activePlayers + "/" + this.room.maxPlayers;
     }
@@ -40,7 +44,8 @@ public class Room : MonoBehaviour
         try
         {
             string userJson = JsonConvert.SerializeObject(FirebaseManager.currentUser.user);
-            FirebaseDatabase.JoinRoom("rooms", room.roomUid, userJson, gameObject.name, "OnJoinRoom", "OnError");
+            Debug.Log("3" + userJson);
+            FirebaseDatabase.JoinRoom("rooms", room.roomId, userJson, gameObject.name, "OnJoinRoom", "OnError");
 
         }
         catch (System.Exception)
@@ -56,5 +61,15 @@ public class Room : MonoBehaviour
     public void OnJoinRoom(string successMessage)
     {
         Debug.Log("Joined room succesffully");
+        // show room with you joined
+        joinRoomView.SetActive(false);
+        joinedRoomView.GetComponent<HostRoom>().roomKey = room.roomId;
+        joinedRoomView.GetComponent<HostRoom>().currentRoom = room;
+        joinedRoomView.SetActive(true);
+    }
+
+    public void OnError(string errorMessage)
+    {
+        Debug.Log("Cannot join room! " + errorMessage);
     }
 }

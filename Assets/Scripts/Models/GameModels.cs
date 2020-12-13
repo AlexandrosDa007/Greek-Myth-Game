@@ -78,13 +78,14 @@ namespace Scripts.GameModels
         public int maxPlayers { get; set; }
         public int activePlayers { get; set; }
         public string difficulty { get; set; }
-        public string roomUid { get; set; }
+        public string roomId { get; set; }
         public JUser[] players { get; set; }
     }
     [Serializable]
     public class JUser
     {
         public string uid {get; set;}
-        public string displayName {get;set;}    
+        public string displayName {get;set;}
+        public bool ready {set;get;}   
     }
 }
